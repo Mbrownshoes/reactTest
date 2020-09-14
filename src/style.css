@@ -1,0 +1,80 @@
+.btn {
+  background-color: #28879B;
+  color: white;
+  border-color: white;
+}
+.btn:hover{
+  background-color: #073B4F;
+}
+.btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
+  background-color: #073B4F;
+  color: white;
+  border-color: white;
+  outline: white
+}
+.btn-group {
+  flex-wrap: wrap;
+}
+[type='radio'] {
+  display: none; 
+}
+.categorySelector {
+  text-align: center;
+}
+.animationControls {
+  text-align: center;
+}
+.slider.slider-horizontal {
+  width: 60%;
+  height: 20px;
+  margin: 20px 20px 20px 20px;
+}
+.slider-track-high{
+  background-color: #DEDDD7;
+}
+.slider-selection.tick-slider-selection {
+  background-color: #959591;
+  background-image: none;
+}
+.bs-tooltip-auto[x-placement^=top] .arrow::before, .bs-tooltip-top .arrow::before {
+  border-top-color: #494948;
+}
+.tooltip-inner {
+  background-color: #494948;
+}
+.bottomRow {
+  padding-bottom: 15px;
+}
+.topRow {
+  padding-top: 15px;
+}
+.title {
+  text-align: center;
+  font-size: 25px;
+}
+.description {
+  text-align: center;
+}
+.selectedCategory {
+  text-align: center;
+}
+.categoryDescription {
+  border: 1px solid lightgrey;
+}
+.slider-tick{
+  background-color: #DEDDD7;
+  background-image: none;
+  opacity: 1;
+}
+.slider-tick.in-selection {
+  background-color: #959591;
+  background-image: none;
+  opacity: 1;
+}
+.slider-handle.min-slider-handle.round {
+  background-color: #494948;
+  background-image: none;
+}
+.chart {
+  background-color: #e9f6f7;
+}
