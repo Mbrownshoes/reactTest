@@ -8,38 +8,60 @@ import _ from 'lodash'
 import * as ss from 'simple-statistics'
 import * as d3 from 'd3'
 
-
 export default function ReactD3Viz() {
 
- 
-  const [data,
-    setData] = useState(null)
-
-  const targetRef = useRef()
-  
-
+  const [data, setData] = useState(null)
+  const [dimensions, setDimensions] = useState({width: window.innerWidth, height: window.innerHeight})
   const d3Container = useRef(null);
-
-  // Goal is to use useLayoutEffect to automaticaly scale the chart dimensions
+  // const windowSize = useWindowSize()
+  // function useWindowSize() {
+  //   // Initialize state with undefined width/height so server and client renders match
+  //   // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  //   const [windowSize, setWindowSize] = useState({
+  //     width: undefined,
+  //     height: undefined,
+  //   });
   
-  // useLayoutEffect(() => {
-  //   if (targetRef.current) {
-  //     setDimensions({width: targetRef.current.offsetWidth, height: targetRef.current.offestHeigt})
-  //   }
-  // }, [])
+  //   useEffect(() => {
+  //     // Handler to call on window resize
+  //     function handleResize() {
+  //       // Set window width/height to state
+  //       setWindowSize({
+  //         width: window.innerWidth,
+  //         height: window.innerHeight,
+  //       });
+  //     }
+      
+  //     // Add event listener
+  //     window.addEventListener("resize", handleResize);
+      
+  //     // Call handler right away so state gets updated with initial window size
+  //     handleResize();
+      
+  //     // Remove event listener on cleanup
+  //     return () => window.removeEventListener("resize", handleResize);
+  //   }, []); // Empty array ensures that effect is only run on mount
+  
+  //   return windowSize;
+  // }
+
+  // useEffect(() => {
+  //   console.log('resized')
+  //   setDimensions({width: window.innerWidth, height: window.innerHeight})
+  // }, [window.innerWidth, window.innerHeight])
 
   useEffect(() => {
     async function getData() {
       await d3
-        .csv("https://gist.githubusercontent.com/Mbrownshoes/7f08c0aa283d79e096091b849dd5c03d/" +
-          "raw/b7e7ff8b2df0b463ae6165a4581807211e32b479/data700.csv",
+      .csv("https://gist.githubusercontent.com/Mbrownshoes/7f08c0aa283d79e096091b849dd5c03d/" +
+      "raw/b7e7ff8b2df0b463ae6165a4581807211e32b479/data700.csv",
       d3.autoType)
-        .then(data => {
-          const dataClean = data.map(d => {
-            return {date: d.year, value: d.value};
-          });
-          setData(dataClean)
-        })
+      .then(data => {
+        const dataClean = data.map(d => {
+          return {date: d.year, value: d.value};
+        });
+        setData(dataClean)
+      })
     }
     getData()
   }, [])
@@ -48,8 +70,6 @@ export default function ReactD3Viz() {
   useEffect(() => {
     if (data) {
       const svg = d3.select(d3Container.current);
-      const height = 300;
-      const width = 500;
       const margin = {
         top: 10,
         right: 50,
@@ -58,7 +78,7 @@ export default function ReactD3Viz() {
       }
 
       const xAxis = g => g
-        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .attr("transform", `translate(0,${dimensions.height - margin.bottom})`)
         .call(d3.axisBottom(x).tickFormat(d3.format(".0f")))
         .call(g => g.select(".domain").remove());
 
@@ -67,7 +87,7 @@ export default function ReactD3Viz() {
         .domain(d3.extent(data, d => d.date))
         .nice()
         .range([
-          margin.left, width - margin.right
+          margin.left, dimensions.width - margin.right
         ]);
       // const  z = {
 
@@ -86,7 +106,7 @@ export default function ReactD3Viz() {
         .attr("transform", `translate(${margin.left},0)`)
         .call(d3.axisLeft(y).ticks(null, "+"))
         .call(g => g.select(".domain").remove())
-        .call(g => g.selectAll(".tick line").filter(d => d === 0).clone().attr("x2", width - margin.right - margin.left).attr("stroke", "#ccc"))
+        .call(g => g.selectAll(".tick line").filter(d => d === 0).clone().attr("x2", dimensions.width - margin.right - margin.left).attr("stroke", "#ccc"))
         .call(g => g.append("text").attr("fill", "#000").attr("x", 5).attr("y", margin.top).attr("dy", "0.32em").attr("text-anchor", "start").attr("font-weight", "bold").text("Anomaly (°C) - 0-700m"));
 
       const y = d3
@@ -94,7 +114,7 @@ export default function ReactD3Viz() {
         .domain(d3.extent(data, d => d.value))
         .nice()
         .range([
-          height - margin.bottom,
+          dimensions.height - margin.bottom,
           margin.top
         ]);
 
@@ -144,7 +164,7 @@ export default function ReactD3Viz() {
   }, [d3Container.current])
 
   return (
-    <div className='chart' ref={targetRef}>
+    <div className='chart'>
       <Container fluid>
         <Row>
           <Col>
@@ -158,7 +178,7 @@ export default function ReactD3Viz() {
         </Row>
 
         <Row>
-          <svg className="d3-component" width={400} height={300} ref={d3Container}/>
+          <svg className="d3-component" width={dimensions.width} height={dimensions.height} ref={d3Container}/>
         </Row>
 
       </Container>
